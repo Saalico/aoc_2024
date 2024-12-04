@@ -12,8 +12,12 @@ mulString = \string ->
         _ -> Err InvalidString
 
 part1 = \in ->
-    Str.splitOn in "mul("
-    |> List.joinMap \x -> Str.splitOn x ")"
+    Str.splitOn in ")"
+    |> List.joinMap \x ->
+        if Str.contains x "mul(" then
+            Str.splitOn x "mul("
+        else
+            [""]
     |> List.keepIf \chunk -> (List.all (Str.toUtf8 chunk) \c -> List.contains closeToken c) && !(Str.isEmpty chunk)
     |> List.keepOks \x -> mulString x
     |> List.sum
@@ -25,8 +29,5 @@ part2 =
     |> part1
 
 main =
-    dbg (part1 input)
+    Stdout.line! "part1: $(Num.toStr part2) part2: $(Num.toStr (part1 input))"
 
-    dbg part2
-
-    Stdout.line! "sup"
